@@ -3,10 +3,286 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:extk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
         xmlns:local="clr-namespace:JinsMeme_WebAPI_Client"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="JINS MEME Web API Client" Height="800" Width="840"
+        Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid>
-        
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0" VerticalAlignment="Top">
+                <GroupBox Header="認証" Margin="10,2" VerticalAlignment="Top">
+                    <StackPanel>
+                        <Grid Margin="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Language="ja-jp"/>
+                                <ColumnDefinition Language="ja-jp" Width="3*"/>
+                                <ColumnDefinition Language="ja-jp"/>
+                                <ColumnDefinition Language="ja-jp" Width="3*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Language="ja-jp"/>
+                                <RowDefinition Language="ja-jp"/>
+                                <RowDefinition Language="ja-jp"/>
+                                <RowDefinition Language="ja-jp"/>
+                                <RowDefinition Language="ja-jp"/>
+                                <RowDefinition Language="ja-jp"/>
+                                <RowDefinition Language="ja-jp"/>
+                                <RowDefinition Language="ja-jp"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="アプリID" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                            <TextBox Height="26" TextWrapping="Wrap" Text="{Binding OAuth_Authentication.ApplicationId.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center"/>
+                            <Label Content="アプリSecret" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Column="2"/>
+                            <TextBox Height="26" TextWrapping="Wrap" Text="{Binding OAuth_Authentication.ApplicationSecret.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" VerticalContentAlignment="Center"/>
+                            <Label Content="コールバックURL" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1"/>
+                            <TextBox Height="26" TextWrapping="Wrap" Text="{Binding OAuth_Authentication.RedirectUrl.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="1"/>
+                            <Label Content="メールアドレス" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="2"/>
+                            <TextBox Height="26" TextWrapping="Wrap" Text="{Binding OAuth_Authentication.EmailAddress.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" VerticalContentAlignment="Center" Grid.Row="1"/>
+                            <Label Content="スコープ" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="2"/>
+                            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.ColumnSpan="3">
+                                <CheckBox x:Name="office" Content="Office" IsChecked="{Binding OAuth_Authentication.Scope_office.Value, Mode=TwoWay}" Grid.Column="1" Margin="0,0,20,0" VerticalAlignment="Center" Grid.Row="4" HorizontalAlignment="Center"/>
+                                <CheckBox x:Name="run" Content="Run Next" IsChecked="{Binding OAuth_Authentication.Scope_run.Value, Mode=TwoWay}" Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,20,0" VerticalAlignment="Center" Grid.Row="4"/>
+                                <CheckBox x:Name="drive" Content="Drive" IsChecked="{Binding OAuth_Authentication.Scope_drive.Value, Mode=TwoWay}" Grid.Column="3" HorizontalAlignment="Center" Margin="0,0,20,0" VerticalAlignment="Center" Grid.Row="4"/>
+                            </StackPanel>
+                            <Label Content="state" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="3"/>
+                            <TextBox Height="26" TextWrapping="Wrap" Text="{Binding OAuth_Authentication.State.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="3" IsReadOnly="True" Grid.ColumnSpan="3" Background="#FFEFF0F0"/>
+                            <Label Content="アクセストークン" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="4"/>
+                            <TextBox Height="26" TextWrapping="Wrap" Text="{Binding OAuth_Authentication.AccessToken.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="4" Margin="0" IsReadOnly="True" Background="#FFEFF0F0"/>
+                            <Label Content="リフレッシュトークン" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="4" Grid.Column="2"/>
+                            <TextBox Height="26" TextWrapping="Wrap" Text="{Binding OAuth_Authentication.RefreshToken.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" VerticalContentAlignment="Center" Grid.Row="4" Margin="0" IsReadOnly="True" Background="#FFEFF0F0"/>
+                        </Grid>
+                        <Grid Margin="50,10,50,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Language="ja-jp" Width="0.5*"/>
+                                <ColumnDefinition Language="ja-jp"/>
+                                <ColumnDefinition Language="ja-jp"/>
+                                <ColumnDefinition Language="ja-jp"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Language="ja-jp"/>
+                            </Grid.RowDefinitions>
+                            <Label Content="アクセストークンの" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                            <Button Content="取得" Width="128" Height="26" Click="OAuth_GetAccessTokenButton_Click" Command="{Binding OAuth_Authentication.GetAccessTokenCommand}" Margin="0" Grid.Column="1"/>
+                            <Button Content="更新" Width="128" Height="26" Click="OAuth_RefreshAccessTokenButton_Click" Command="{Binding OAuth_Authentication.RefreshAccessTokenCommand}" Margin="0" Grid.Column="2"/>
+                            <Button Content="破棄" Width="128" Height="26" Click="OAuth_RevokeAccessTokenButton_Click" Command="{Binding OAuth_Authentication.RevokeAccessTokenCommand}" Margin="0" Grid.Column="3"/>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+                <TabControl VerticalAlignment="Top" Height="340" Margin="10,2">
+                    <TabItem Header="OFFICE データ取得">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <Expander Header="OFFICE APPイベント取得" IsExpanded="True">
+                                    <GroupBox Margin="0,2,0,0">
+                                        <StackPanel Margin="0">
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Language="ja-jp"/>
+                                                    <ColumnDefinition Language="ja-jp" Width="4*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Content="type" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Office2_Events.Type.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" VerticalAlignment="Center"/>
+                                                <Label Content="id(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Office2_Events.Id.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
+                                                <Label Content="measured__from(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="2" VerticalAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Office2_Events.MeasuredFrom.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="2" VerticalAlignment="Center"/>
+                                                <Label Content="measured__to(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="3" VerticalAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Office2_Events.MeasuredTo.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center"/>
+                                                <Label Content="limit(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="4" VerticalAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="1-120" Text="{Binding Office2_Events.Limit.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="4" VerticalAlignment="Center"/>
+                                                <Label Content="cursor(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="5" VerticalAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Office2_Events.Cursor.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center"/>
+                                                <Label Content="fields(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="6" VerticalAlignment="Center"/>
+                                                <StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <CheckBox IsChecked="{Binding Office2_Events.Fields_id.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="id"/>
+                                                    <CheckBox IsChecked="{Binding Office2_Events.Fields_updated_at.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="updated__at"/>
+                                                    <CheckBox IsChecked="{Binding Office2_Events.Fields_json_data.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="json__data"/>
+                                                    <CheckBox IsChecked="{Binding Office2_Events.Fields_data_file_url.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="data__file__url"/>
+                                                    <CheckBox IsChecked="{Binding Office2_Events.Fields_data_created_at.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="created__at"/>
+                                                </StackPanel>
+                                                <Label Content="sort(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="7" VerticalAlignment="Center"/>
+                                                <ComboBox IsEditable="True" Grid.Row="7" Grid.Column="1" HorizontalAlignment="Left" Text="{Binding Office2_Events.Sort.Value}" VerticalAlignment="Center">
+                                                    <TextBlock Text="updated_at"/>
+                                                    <TextBlock Text="created_at"/>
+                                                </ComboBox>
+                                            </Grid>
+                                            <Button Content="実行" Width="128" Grid.ColumnSpan="2" Grid.Row="3" Height="26" Click="Office2_EventsButton_Click" Command="{Binding Office2_Events.ExecuteCommand}"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Expander>
+                                <Expander Header="OFFICE 計測データ取得">
+                                    <GroupBox Margin="0,2,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Language="ja-jp"/>
+                                                    <ColumnDefinition Language="ja-jp" Width="4*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Content="date__from" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Office2_ComputedData.DateFrom.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center"/>
+                                                <Label Content="date__to" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Office2_ComputedData.DateTo.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                                                <Label Content="cursor(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="2"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Office2_ComputedData.Cursor.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1"/>
+                                            </Grid>
+                                            <Button Content="実行" Width="128" Grid.ColumnSpan="2" Grid.Row="3" Height="26" Click="Office2_ComputedDataButton_Click" Command="{Binding Office2_ComputedData.ExecuteCommand}"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Expander>
+                                <Expander Header="OFFICE サマリデータ取得">
+                                    <GroupBox Margin="0,2,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Language="ja-jp"/>
+                                                    <ColumnDefinition Language="ja-jp" Width="4*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Content="date__from" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Office2_SummarizedData.DateFrom.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center"/>
+                                                <Label Content="date__to" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Office2_SummarizedData.DateTo.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                                            </Grid>
+                                            <Button Content="実行" Width="128" Grid.ColumnSpan="2" Grid.Row="3" Height="26" Click="Office2_SummarizedDataButton_Click" Command="{Binding Office2_SummarizedData.ExecuteCommand}"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="RUN NEXT データ取得">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <Expander Header="JINS MEME RUN NEXT APPイベント取得" IsExpanded="True">
+                                    <GroupBox Margin="0,2,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Language="ja-jp"/>
+                                                    <ColumnDefinition Language="ja-jp" Width="4*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Content="type" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Run_Events.Type.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center"/>
+                                                <Label Content="id(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Run_Events.Id.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="1"/>
+                                                <Label Content="measured__from(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="2"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Run_Events.MeasuredFrom.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="2"/>
+                                                <Label Content="measured__to(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="3"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Run_Events.MeasuredTo.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1"/>
+                                                <Label Content="limit(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="4"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="1-120" Text="{Binding Run_Events.Limit.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center" Grid.Row="4"/>
+                                                <Label Content="cursor(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="5"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Run_Events.Cursor.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="5" Grid.Column="1"/>
+                                                <Label Content="fields(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="6"/>
+                                                <StackPanel Grid.Row="6" Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
+                                                    <CheckBox IsChecked="{Binding Run_Events.Fields_id.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="id"/>
+                                                    <CheckBox IsChecked="{Binding Run_Events.Fields_updated_at.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="updated__at"/>
+                                                    <CheckBox IsChecked="{Binding Run_Events.Fields_json_data.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="json__data"/>
+                                                    <CheckBox IsChecked="{Binding Run_Events.Fields_data_field_url.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="data__file__url"/>
+                                                    <CheckBox IsChecked="{Binding Run_Events.Fields_data_created_at.Value}" VerticalAlignment="Center" Margin="0,0,20,0" Content="created__at"/>
+                                                </StackPanel>
+                                                <Label Content="sort(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="7" VerticalAlignment="Center"/>
+                                                <ComboBox IsEditable="True" Grid.Row="7" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" Text="{Binding Run_Events.Sort.Value}">
+                                                    <TextBlock Text="updated_at"/>
+                                                    <TextBlock Text="created_at"/>
+                                                </ComboBox>
+                                            </Grid>
+                                            <Button Content="実行" Width="128" Grid.ColumnSpan="2" Grid.Row="3" Height="26" Click="Run_EventsButton_Click" Command="{Binding Run_Events.ExecuteCommand}"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="DRIVE データ取得">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <Expander Header="DRIVE 計測データ取得" IsExpanded="True">
+                                    <GroupBox Margin="0,2,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Language="ja-jp"/>
+                                                    <ColumnDefinition Language="ja-jp" Width="4*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Content="date__from" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Drive2_ComputedData.DateFrom.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center"/>
+                                                <Label Content="date__to" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Drive2_ComputedData.DateTo.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                                                <Label Content="fields(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="2"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Drive2_ComputedData.Fields.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="1"/>
+                                                <Label Content="cursor(オプション)" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="3"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Text="{Binding Drive2_ComputedData.Cursor.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="3" Grid.Column="1"/>
+                                            </Grid>
+                                            <Button Content="実行" Width="128" Grid.ColumnSpan="2" Grid.Row="3" Height="26" Click="Drive2_ComputedDataButton_Click" Command="{Binding Drive2_ComputedData.ExecuteCommand}"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Expander>
+                                <Expander Header="DRIVE サマリデータ取得">
+                                    <GroupBox Margin="0,2,0,0">
+                                        <StackPanel>
+                                            <Grid Margin="0,8,0,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Language="ja-jp"/>
+                                                    <ColumnDefinition Language="ja-jp" Width="4*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                    <RowDefinition Language="ja-jp"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Content="date__from" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Drive2_SummarizedData.DateFrom.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Column="1" VerticalContentAlignment="Center"/>
+                                                <Label Content="date__to" Height="26" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" Grid.Row="1"/>
+                                                <extk:WatermarkTextBox Height="26" TextWrapping="Wrap" Watermark="YYYY-MM-DDThh:mm:ssTZD" Text="{Binding Drive2_SummarizedData.DateTo.Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                                            </Grid>
+                                            <Button Content="実行" Width="128" Grid.ColumnSpan="2" Grid.Row="3" Height="26" Click="Drive2_SummarizedDataButton_Click" Command="{Binding Drive2_SummarizedData.ExecuteCommand}"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </TabItem>
+                </TabControl>
+                <GroupBox Header="実行結果" Margin="10,2" Height="220">
+                    <ScrollViewer Margin="0,2">
+                        <TextBox x:Name="textBox" TextWrapping="Wrap" Text="{Binding Result.Value}" VerticalScrollBarVisibility="Auto" Margin="0"/>
+                    </ScrollViewer>
+                </GroupBox>
+            </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>
