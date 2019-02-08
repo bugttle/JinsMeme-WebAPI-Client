@@ -9,7 +9,9 @@ namespace JinsMeme_WebAPI_Client.ViewModel.Users.Me.Drive2
 {
     public class SummarizedData : INotifyPropertyChanged, IDisposable
     {
+#pragma warning disable 0067
         public event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore 0067
 
         CompositeDisposable Disposable { get; } = new CompositeDisposable();
 
